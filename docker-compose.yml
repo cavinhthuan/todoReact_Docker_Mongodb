@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  # React application
+  react-todo-list:
+    build:
+      context: ./React-Todo-list
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server-api
+
+  # Python server API with MongoDB
+  server-api:
+    build:
+      context: ./Pyserver
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      MONGO_URI: "mongodb://mongo:27017/"
+    depends_on:
+      - mongo
+
+  # MongoDB
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
